@@ -10,7 +10,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="{{ url_for('static', filename='bootstrap.min.css') }}" rel="stylesheet">
-    
+
     <link href="{{ url_for('static', filename='theme.css') }}" rel="stylesheet">
   </head>
 
@@ -20,17 +20,35 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-          <a class="navbar-brand" href="{{ url_for('index') }}">Questions & Answers</a>
+          <a class="navbar-brand" href="#">Questions & Answers</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-        {% block nav %}{% endblock %}
+          <ul class="nav navbar-nav">
+            <li><a href="{{ url_for('main.index') }}">Home</a></li>
+            {% if not current_user.is_authenticated %}
+            <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+            <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('main.ask') }}">Ask Question</a></li>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.expert %}
+            <li><a href="{{ url_for('main.unanswered') }}">Unanswered Questions</a></li>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.admin %}
+            <li><a href="{{ url_for('main.users') }}">User Setup</a></li>
+            {% endif %}
+            {% if current_user.is_authenticated %}
+            <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
+            {% endif %}
+          </ul>
         </div><!--/.nav-collapse -->
       </div>
     </nav>
 
     <div class="container theme-showcase" role="main">
 
-    {% block body %}{% endblock %}
+      {% block content %}{% endblock %}
 
     </div> <!-- /container -->
 
